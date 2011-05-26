@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<application xmlns="http://ns.adobe.com/air/application/2.5">
+  <id>HitHint</id>
+  <versionNumber>0.1</versionNumber>
+  <supportedProfiles>mobileDevice</supportedProfiles>
+  <filename>HitHint</filename>
+  <name>
+    <text xml:lang="jp">Hit or Hint!</text>
+    <text xml:lang="en">Hit or Hint!</text>
+  </name>
+  <initialWindow>
+    <title>Hit or Hint!</title>
+    <content>HitHint.swf</content>
+    <visible>true</visible>
+    <autoOrients>true</autoOrients>
+    <systemChrome>standard</systemChrome>
+  </initialWindow>
+  <icon>
+    <!--
+		<image72x72>icons/icon_72.png</image72x72>
+-->
+  </icon>
+  <!-- 
+	More options:
+	http://livedocs.adobe.com/flex/3/html/File_formats_1.html#1043413
+	-->
+  <description>
+    <text xml:lang="jp">
+    </text>
+    <text xml:lang="en">
+    </text>
+  </description>
+</application>
