@@ -1,16 +1,27 @@
 package 
 {
+	import com.adobe.serialization.json.JSON;
 	import com.danielfreeman.madcomponents.UI;
 	import com.danielfreeman.madcomponents.UIButton;
 	import com.danielfreeman.madcomponents.UIInput;
 	import com.danielfreeman.madcomponents.UILabel;
 	import com.danielfreeman.madcomponents.UIList;
+	import com.danielfreeman.madcomponents.UIPages;
+	import com.danielfreeman.madcomponents.UIWindow;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
+	import flash.events.AsyncErrorEvent;
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
+	import flash.events.NetStatusEvent;
 	import flash.events.TouchEvent;
+	import flash.net.NetConnection;
+	import flash.net.ObjectEncoding;
+	import flash.net.Responder;
+	import flash.net.SharedObject;
+	import flash.text.TextFormat;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
 	import hints.*;
@@ -62,9 +73,15 @@ package
 		 */
 		public var bonus_point:Number;
 		/**
+		 * ランキングに登録されるプレイヤー名です。
+		 * @default 
+		 */
+		public var player_name:String = "";
+		
+		/**
 		 * ヒントのクラス配列です。
 		 */
-		public var hint_classes:Vector.<Class> = new <Class>[
+		protected var hint_classes:Vector.<Class> = new <Class>[
 			SameHint,
 			NumberExistHint,
 			EvenOrOddHint,
@@ -80,6 +97,15 @@ package
 			CorrectNumberHint,
 		];
 		/**
+		 * セーブデータです。
+		 */
+		protected var saveData:SharedObject;
+		/**
+		 * 通信です。
+		 */
+		public var connector:NetConnection;
+		
+		/**
 		 * レイアウト定義です。
 		 */
 		protected static const LAYOUT:XML =
@@ -92,10 +118,11 @@ package
 				<label id="uiMessage"/>
 				<input id="uiAnswer" background="#777777,#FFFFFF"/>
 				<button id="enter">Hit or Hint!</button>
-				<vertical alignV="centre">
-					<button id="uiRetry">Retry</button>
-					<button id="uiNewGame">New game</button>
-				</vertical>
+				<label></label>
+				<button id="uiRetry">Retry</button>
+				<label></label>
+				<button id="uiNewGame">Retire</button>
+				<button id="ranking">Ranking</button>
 				<horizontal alignV="bottom">
 					<label><b>Score: </b></label>
 					<label id="uiScore">0</label>
@@ -105,7 +132,57 @@ package
 				<label id="label"/>
 			</list>
 		</horizontal>
-		
+		/**
+		 * レイアウト定義です。
+		 */
+		protected static const LAYOUT_RANKING:XML =
+		<vertical>
+			<button id="back">back</button>
+			<horizontal>
+				<label alignH="left"><b>Num</b></label>
+				<label><b>Name</b></label>
+				<label alignH="right"><b>Points</b></label>
+			</horizontal>
+			<list id="scores">
+				<horizontal>
+					<label id="order" alignH="left">000</label>
+					<label id="name">anonymous</label>
+					<label id="points" alignH="right">0000</label>
+				</horizontal>
+			</list>
+		</vertical>
+		protected static const PAGES:XML = <pages id="pages">{LAYOUT}{LAYOUT_RANKING}</pages>;
+		/**
+		 * レイアウト定義です。
+		 */
+		protected static const LAYOUT_CONFIRM:XML =
+		<vertical>
+			<label><font size="18" color="#FFFFFF"><b>Result</b></font></label>
+			<horizontal>
+				<label><font color="#FFFFFF">Turn: </font></label>
+				<label id="resultTurn">0</label>
+			</horizontal>
+			<horizontal>
+				<label><font color="#FFFFFF">Score: </font></label>
+				<label id="resultScore">0</label>
+			</horizontal>
+			<horizontal>
+				<arrow/>
+				<label><font color="#FFFFFF">Final Score: </font></label>
+				<label id="finalScore">0</label>
+			</horizontal>
+			<horizontal>
+				<arrow/>
+				<label><font color="#FFFFFF">player_name: </font></label>
+			</horizontal>
+			<input id="player_name" background="#777777,#FFFFFF" alignH="fill" />
+			<label><font color="#FFFFFF">ランキングに
+登録しますか？</font></label>
+			<horizontal>
+				<button id="register">OK</button>
+				<button id="cancel">NO</button>
+			</horizontal>
+		</vertical>
 		/**
 		 * 画面に表示されるメッセージ
 		 */
@@ -138,6 +215,38 @@ package
 		 * 画面に表示されるリスタートボタン
 		 */
 		protected var uiNewGame:UIButton;
+		/**
+		 * 確認画面
+		 */
+		protected var uiConfirm:UIWindow;
+		/**
+		 * 確認画面に表示される登録ボタン
+		 */
+		protected var uiRegister:UIButton;
+		/**
+		 * 確認画面に表示されるキャンセルボタン
+		 */
+		protected var uiCancel:UIButton;
+		/**
+		 * 確認画面に表示されるターン数
+		 */
+		protected var uiResultTurn:UILabel;
+		/**
+		 * 確認画面に表示される総合得点
+		 */
+		protected var uiResultScore:UILabel;
+		/**
+		 * 確認画面に表示される最終得点
+		 */
+		protected var uiFinalScore:UILabel;
+		/**
+		 * 確認画面に表示される名前入力欄
+		 */
+		protected var uiName:UIInput;
+		protected var uiRanking:UIButton;
+		protected var uiPages:UIPages;
+		protected var uiScores:UIList;
+		protected var uiBack:UIButton;
 		
 		/**
 		 * ガウス分布の平均です。
@@ -157,9 +266,43 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
-			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
+			CONFIG::release {
+				Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
+			}
 			
-			UI.create(this, LAYOUT);
+			UI.create(this, PAGES);
+			
+			uiConfirm = UI.createPopUp(LAYOUT_CONFIRM, 140.0, 300.0);
+			
+			uiPages = UIPages(UI.findViewById("pages"))
+			
+			uiMessage = UILabel(UI.findViewById("uiMessage"));
+			uiAnswer = UIInput(UI.findViewById("uiAnswer"));
+			uiHints = UIList(UI.findViewById("uiHints"));
+			uiScore = UILabel(UI.findViewById("uiScore"));
+			uiTurn = UILabel(UI.findViewById("uiTurn"));
+			uiEnter = UIButton(UI.findViewById("enter"));
+			uiRetry = UIButton(UI.findViewById("uiRetry"));
+			uiNewGame = UIButton(UI.findViewById("uiNewGame"));
+			uiRanking = UIButton(UI.findViewById("ranking"));
+			
+			uiRegister = UIButton(uiConfirm.findViewById("register"));
+			uiCancel = UIButton(uiConfirm.findViewById("cancel"));
+			uiName = UIInput(uiConfirm.findViewById("player_name"));
+			
+			uiResultTurn = UILabel(uiConfirm.findViewById("resultTurn"));
+			uiResultScore = UILabel(uiConfirm.findViewById("resultScore"));
+			uiFinalScore = UILabel(uiConfirm.findViewById("finalScore"));
+			
+			var resultLabelFormat:TextFormat = new TextFormat(null, null, 0xFFFFFF);
+			uiResultTurn.defaultTextFormat = resultLabelFormat;
+			uiResultScore.defaultTextFormat = resultLabelFormat;
+			uiFinalScore.defaultTextFormat = resultLabelFormat;
+			
+			saveData = SharedObject.getLocal("saveData");
+			
+			connector = new NetConnection();
+			connector.objectEncoding = ObjectEncoding.AMF3;
 			
 			initilaze();
 			
@@ -170,9 +313,16 @@ package
 		 * @param	event	タップイベントです。
 		 */
 		protected function initilaze(event:Event = null):void {
+			UI.hidePopUp(uiConfirm);
+			
 			score = 0;
 			turn = 0;
 			digit = 3;
+			
+			if (saveData.data.player_name) {
+				player_name = saveData.data.player_name;
+			}
+			uiName.text = player_name;
 			
 			reset();
 		}
@@ -191,20 +341,12 @@ package
 			
 			bonus_point = 1000;
 			
-			uiMessage = UILabel(UI.findViewById("uiMessage"));
 			uiMessage.text = digit + ' digit number to';
-			uiAnswer = UIInput(UI.findViewById("uiAnswer"));
 			uiAnswer.text = '000';
-			uiHints = UIList(UI.findViewById("uiHints"));
-			uiScore = UILabel(UI.findViewById("uiScore"));
 			uiScore.text = score.toString();
-			uiTurn = UILabel(UI.findViewById("uiTurn"));
 			uiTurn.text = turn.toString();
-			uiEnter = UIButton(UI.findViewById("enter"));
-			uiEnter.mouseEnabled = true;
-			uiEnter.mouseChildren = true;
-			uiRetry = UIButton(UI.findViewById("uiRetry"));
-			uiNewGame = UIButton(UI.findViewById("uiNewGame"));
+			uiEnter.visible = true;
+			uiNewGame.visible = false;
 			
 			pushHint();
 		}
@@ -255,16 +397,112 @@ package
 		 * イベントを登録します。
 		 */
 		protected function events():void {
+			connector.addEventListener(NetStatusEvent.NET_STATUS, function(e:NetStatusEvent):void {
+			   trace(NetStatusEvent.NET_STATUS, "code:", e.info.code);
+			});
+			connector.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {
+				trace(IOErrorEvent.IO_ERROR);
+			});
+			connector.addEventListener(AsyncErrorEvent.ASYNC_ERROR, function(e:AsyncErrorEvent):void {
+				trace(AsyncErrorEvent.ASYNC_ERROR);
+			});
 			CONFIG::debug {
 				uiEnter.addEventListener(MouseEvent.CLICK, check);
 				uiRetry.addEventListener(MouseEvent.CLICK, reset);
-				uiNewGame.addEventListener(MouseEvent.CLICK, initilaze);
+				uiNewGame.addEventListener(MouseEvent.CLICK, over);
+				uiRegister.addEventListener(MouseEvent.CLICK, register);
+				uiCancel.addEventListener(MouseEvent.CLICK, initilaze);
+				uiRanking.addEventListener(MouseEvent.CLICK, ranking);
 			}
 			CONFIG::release {
 				uiEnter.addEventListener(TouchEvent.TOUCH_TAP, check);
 				uiRetry.addEventListener(TouchEvent.TOUCH_TAP, reset);
-				uiNewGame.addEventListener(TouchEvent.TOUCH_TAP, initilaze);
+				uiNewGame.addEventListener(TouchEvent.TOUCH_TAP, over);
+				uiRegister.addEventListener(TouchEvent.TOUCH_TAP, register);
+				uiCancel.addEventListener(TouchEvent.TOUCH_TAP, initilaze);
+				uiRanking.addEventListener(TouchEvent.TOUCH_TAP, ranking);
 			}
+		}
+		
+		private function back(e:Event = null):void 
+		{
+			uiPages.previousPage();
+		}
+		
+		private function ranking(e:Event = null):void 
+		{
+			uiPages.nextPage();
+			
+			uiScores = UIList(UI.findViewById("scores"));
+			uiBack = UIButton(UI.findViewById("back"));
+			
+			CONFIG::debug {
+				uiBack.addEventListener(MouseEvent.CLICK, back);
+			}
+			CONFIG::release {
+				uiBack.addEventListener(TouchEvent.TOUCH_TAP, back);
+			}
+			
+			methodCall(
+				'ScoreService.getScores',
+				new Responder(setScores, function(data:Object):void {trace("fault");})
+			);
+		}
+		
+		private function setScores(data:Object):void 
+		{
+			var scores:Array = JSON.decode(data as String) as Array;
+			var formattedScores:Array = [];
+			
+			var order:int = 1;
+			for each (var score:Object in scores) {
+				formattedScores.push( { order: order, name: score.name, points: score.points } );
+				order++;
+			}
+			
+			uiScores.data = formattedScores;
+		}
+		
+		protected function register(e:Event = null):void 
+		{
+			saveData.data.player_name = trim(uiName.text);
+			saveData.flush();
+			
+			methodCall(
+				'ScoreService.add',
+				new Responder(function(data:Object):void {}),
+				{ name: saveData.data.player_name, points: Math.round(score / turn) }
+			);
+			
+			initilaze();
+		}
+		
+		protected function methodCall(command:String, responder:Responder, parameter:Object = null):void {
+			CONFIG::debug {
+				connector.connect('http://localhost:8888/messagebroker/amf');
+			}
+			CONFIG::release {
+				connector.connect('http://hithint.appspot.com/messagebroker/amf');
+			}
+			if (parameter) {
+				connector.call(command, responder, parameter);
+			} else {
+				connector.call(command, responder);
+			}
+			connector.close();
+		}
+		
+		/**
+		 * ゲームオーバー処理です。
+		 * @param	e	タッチイベントです。
+		 */
+		protected function over(e:Event = null):void 
+		{
+			uiResultTurn.text = turn.toString();
+			uiResultScore.text = score.toString();
+			uiFinalScore.text = Math.round(score / turn).toString();
+			
+			UI.showPopUp(uiConfirm);
 		}
 		/**
 		 * 利用可能なヒントをシフトし、開示します。
@@ -345,7 +583,7 @@ package
 		{
 			if (trim(uiAnswer.text) == correct_number.join("")) {
 				uiMessage.text = "正解！";
-				finish();
+				turnSet();
 			} else {
 				uiMessage.text = "違います";
 				pushHint();
@@ -367,16 +605,17 @@ package
 			return s.substring(i, j + 1);
 		}
 		/**
-		 * ゲームの停止処理です。
+		 * ターン終了処理です。
 		 * 一部操作を無効化し、総合得点にクリア得点を加算します。
 		 * @param	e	タッチイベントです。
 		 */
-		protected function finish(e:Event = null):void {
-			uiEnter.mouseEnabled = false;
-			uiEnter.mouseChildren = false;
+		protected function turnSet(e:Event = null):void {
+			uiEnter.visible = false;
 			
 			score += int(bonus_point);
 			uiScore.text = score.toString();
+			
+			uiNewGame.visible = true;
 		}
 		
 	}
