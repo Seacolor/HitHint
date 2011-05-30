@@ -1,6 +1,7 @@
 package 
 {
 	import com.adobe.serialization.json.JSON;
+	import com.adobe.utils.StringUtil;
 	import com.danielfreeman.madcomponents.UI;
 	import com.danielfreeman.madcomponents.UIButton;
 	import com.danielfreeman.madcomponents.UIInput;
@@ -61,12 +62,12 @@ package
 		 * 現在の総合得点です。
 		 * @default 0
 		 */
-		public var score:int;
+		public var score:Number;
 		/**
 		 * 現在のターン数です。
 		 * @default 1
 		 */
-		public var turn:int;
+		public var turn:Number;
 		/**
 		 * 現在のクリア得点です。
 		 * @default 1000
@@ -105,84 +106,6 @@ package
 		 */
 		public var connector:NetConnection;
 		
-		/**
-		 * レイアウト定義です。
-		 */
-		protected static const LAYOUT:XML =
-		<horizontal>
-			<vertical>
-				<horizontal>
-					<label id="uiTurn"/>
-					<label><b>Turn</b></label>
-				</horizontal>
-				<label id="uiMessage"/>
-				<input id="uiAnswer" background="#777777,#FFFFFF"/>
-				<button id="enter">Hit or Hint!</button>
-				<label></label>
-				<button id="uiRetry">Retry</button>
-				<label></label>
-				<button id="uiNewGame">Retire</button>
-				<button id="ranking">Ranking</button>
-				<horizontal alignV="bottom">
-					<label><b>Score: </b></label>
-					<label id="uiScore">0</label>
-				</horizontal>
-			</vertical>
-			<list id="uiHints" colour="#FFFFFF" background="#777777,#FFFFFF">
-				<label id="label"/>
-			</list>
-		</horizontal>
-		/**
-		 * レイアウト定義です。
-		 */
-		protected static const LAYOUT_RANKING:XML =
-		<vertical>
-			<button id="back">back</button>
-			<horizontal>
-				<label alignH="left"><b>Num</b></label>
-				<label><b>Name</b></label>
-				<label alignH="right"><b>Points</b></label>
-			</horizontal>
-			<list id="scores">
-				<horizontal>
-					<label id="order" alignH="left">000</label>
-					<label id="name">anonymous</label>
-					<label id="points" alignH="right">0000</label>
-				</horizontal>
-			</list>
-		</vertical>
-		protected static const PAGES:XML = <pages id="pages">{LAYOUT}{LAYOUT_RANKING}</pages>;
-		/**
-		 * レイアウト定義です。
-		 */
-		protected static const LAYOUT_CONFIRM:XML =
-		<vertical>
-			<label><font size="18" color="#FFFFFF"><b>Result</b></font></label>
-			<horizontal>
-				<label><font color="#FFFFFF">Turn: </font></label>
-				<label id="resultTurn">0</label>
-			</horizontal>
-			<horizontal>
-				<label><font color="#FFFFFF">Score: </font></label>
-				<label id="resultScore">0</label>
-			</horizontal>
-			<horizontal>
-				<arrow/>
-				<label><font color="#FFFFFF">Final Score: </font></label>
-				<label id="finalScore">0</label>
-			</horizontal>
-			<horizontal>
-				<arrow/>
-				<label><font color="#FFFFFF">player_name: </font></label>
-			</horizontal>
-			<input id="player_name" background="#777777,#FFFFFF" alignH="fill" />
-			<label><font color="#FFFFFF">ランキングに
-登録しますか？</font></label>
-			<horizontal>
-				<button id="register">OK</button>
-				<button id="cancel">NO</button>
-			</horizontal>
-		</vertical>
 		/**
 		 * 画面に表示されるメッセージ
 		 */
@@ -249,6 +172,92 @@ package
 		protected var uiBack:UIButton;
 		
 		/**
+		 * レイアウト定義です。
+		 */
+		protected static const LAYOUT:XML =
+		<horizontal>
+			<vertical>
+				<horizontal>
+					<label id="uiTurn"/>
+					<label><font color="#7B7B7B"><b>Turn</b></font></label>
+				</horizontal>
+				<label id="uiMessage"/>
+				<input id="uiAnswer" background="#7B7B7B,#EBFFFF"/>
+				<button id="enter"><font color="#EBEBEB">Hit or Hint!</font></button>
+				<label></label>
+				<button id="uiRetry"><font color="#EBEBEB">Retry</font></button>
+				<label></label>
+				<button id="uiNewGame"><font color="#EBEBEB">Retire</font></button>
+				<button id="ranking"><font color="#EBEBEB">Ranking</font></button>
+				<horizontal alignV="bottom">
+					<label><b>Score: </b></label>
+					<label id="uiScore">0</label>
+				</horizontal>
+			</vertical>
+			<list id="uiHints" colour="#EBFFFF" background="#7B7B7B,#EBFFFF">
+				<label id="label"/>
+			</list>
+		</horizontal>
+		/**
+		 * レイアウト定義です。
+		 */
+		protected static const LAYOUT_RANKING:XML =
+		<vertical>
+			<button id="back"><font color="#EBEBEB">back</font></button>
+			<horizontal>
+				<label alignH="left"><font color="#7B7B7B"><b>Num</b></font></label>
+				<label><font color="#7B7B7B"><b>Name</b></font></label>
+				<label alignH="right"><font color="#7B7B7B"><b>Points</b></font></label>
+			</horizontal>
+			<list id="scores">
+				<horizontal>
+					<label id="order" alignH="left">000</label>
+					<label id="name">anonymous</label>
+					<label id="points" alignH="right">0000</label>
+				</horizontal>
+			</list>
+		</vertical>
+		protected static const PAGES:XML = <pages id="pages">{LAYOUT}{LAYOUT_RANKING}</pages>;
+		/**
+		 * レイアウト定義です。
+		 */
+		protected static const LAYOUT_CONFIRM:XML =
+		<vertical background="#EBFFFF">
+			<label><font size="18" color="#7B7B7B"><b>Result</b></font></label>
+			<horizontal>
+				<label><font color="#7B7B7B">Turn:</font></label>
+				<label id="resultTurn">0</label>
+			</horizontal>
+			<horizontal>
+				<label><font color="#7B7B7B">Score:</font></label>
+				<label id="resultScore">0</label>
+			</horizontal>
+			<horizontal>
+				<arrow/>
+				<label><font color="#7B7B7B">Final Score:</font></label>
+				<label id="finalScore">0</label>
+			</horizontal>
+			<horizontal>
+				<arrow/>
+				<label><font color="#7B7B7B">player_name:</font></label>
+			</horizontal>
+			<input id="player_name" background="#7B7B7B,#EBFFFF" alignH="fill" />
+			<label><font color="#7B7B7B">ランキングに
+登録しますか？</font></label>
+			<horizontal>
+				<button id="register"><font color="#EBEBEB">OK</font></button>
+				<button id="cancel"><font color="#EBEBEB">NO</font></button>
+			</horizontal>
+		</vertical>
+		/**
+		 * レイアウト定義です。
+		 */
+		protected static const LAYOUT_ALERT:XML =
+		<vertical background="#EBFFFF">
+			<label id="alert_message" alignH="fill" alignV="top">Message</label>
+			<button id="close" alignH="centre" alignV="bottom"><font color="#EBEBEB">Close</font></button>
+		</vertical>
+		/**
 		 * ガウス分布の平均です。
 		 */
 		protected static const STDEVP:Number = 0.4;
@@ -256,6 +265,10 @@ package
 		 * ガウス分布の標準偏差です。
 		 */
 		protected static const SIGMA:Number = 0.2;
+		/**
+		 * 表示されるラベルの標準の表示形式です。
+		 */
+		protected static const DEFAULT_LABEL_FORMAT:TextFormat = new TextFormat(null, null, 0x7B7B7B);
 		
 		/**
 		 * コンストラクタです。
@@ -294,12 +307,18 @@ package
 			uiResultScore = UILabel(uiConfirm.findViewById("resultScore"));
 			uiFinalScore = UILabel(uiConfirm.findViewById("finalScore"));
 			
-			var resultLabelFormat:TextFormat = new TextFormat(null, null, 0xFFFFFF);
-			uiResultTurn.defaultTextFormat = resultLabelFormat;
-			uiResultScore.defaultTextFormat = resultLabelFormat;
-			uiFinalScore.defaultTextFormat = resultLabelFormat;
+			uiMessage.defaultTextFormat = DEFAULT_LABEL_FORMAT;
+			uiScore.defaultTextFormat = DEFAULT_LABEL_FORMAT;
+			uiTurn.defaultTextFormat = DEFAULT_LABEL_FORMAT;
+			uiResultTurn.defaultTextFormat = DEFAULT_LABEL_FORMAT;
+			uiResultScore.defaultTextFormat = DEFAULT_LABEL_FORMAT;
+			uiFinalScore.defaultTextFormat = DEFAULT_LABEL_FORMAT;
 			
 			saveData = SharedObject.getLocal("saveData");
+			if (saveData.data.player_name) {
+				player_name = saveData.data.player_name;
+			}
+			uiName.text = player_name;
 			
 			connector = new NetConnection();
 			connector.objectEncoding = ObjectEncoding.AMF3;
@@ -318,11 +337,6 @@ package
 			score = 0;
 			turn = 0;
 			digit = 3;
-			
-			if (saveData.data.player_name) {
-				player_name = saveData.data.player_name;
-			}
-			uiName.text = player_name;
 			
 			reset();
 		}
@@ -456,7 +470,13 @@ package
 			
 			var order:int = 1;
 			for each (var score:Object in scores) {
-				formattedScores.push( { order: order, name: score.name, points: score.points } );
+				var formattedScore:Object = { order: '<font color="#7B7B7B">' + order + '</font>', points: '<font color="#7B7B7B">' + score.points + '</font>' };
+				if (!score.name) {
+					formattedScore.name = '<font color="#CCCCCC">anonymous</font>';
+				} else {
+					formattedScore.name = '<font color="#7B7B7B">' + score.name + '</font>';
+				}
+				formattedScores.push( formattedScore );
 				order++;
 			}
 			
@@ -465,18 +485,54 @@ package
 		
 		protected function register(e:Event = null):void 
 		{
-			saveData.data.player_name = trim(uiName.text);
+			player_name = StringUtil.trim(uiName.text);
+			if (player_name.length > 20) {
+				alert("名前は20文字以内です", 100.0, 80.0);
+				return;
+			}
+			
+			saveData.data.player_name = player_name;
+			if (!saveData.data.player_name) {
+				delete saveData.data.player_name;
+			}
 			saveData.flush();
 			
 			methodCall(
 				'ScoreService.add',
 				new Responder(function(data:Object):void {}),
-				{ name: saveData.data.player_name, points: Math.round(score / turn) }
+				{ name: player_name, points: finalScore }
 			);
 			
 			initilaze();
 		}
 		
+		/**
+		 * 警告画面を表示します。
+		 * @param	message	表示される警告メッセージです。
+		 */
+		protected function alert(message:String, width:Number, height:Number):void {
+			var uiAlert:UIWindow = UI.createPopUp(LAYOUT_ALERT, width, height);
+			var uiAlertMessage:UILabel = UILabel(uiAlert.findViewById("alert_message"));
+			uiAlertMessage.defaultTextFormat = DEFAULT_LABEL_FORMAT;
+			uiAlertMessage.text = message;
+			var uiClose:UIButton = UIButton(uiAlert.findViewById("close"));
+			var doClose:Function = function(event:Event):void {
+				UI.removePopUp(uiAlert);
+			}
+			CONFIG::debug {
+				uiClose.addEventListener(MouseEvent.CLICK, doClose);
+			}
+			CONFIG::release {
+				uiClose.addEventListener(TouchEvent.TOUCH_TAP, doClose);
+			}
+		}
+		
+		/**
+		 * サーバーのメソッドを呼び出します。
+		 * @param	command	呼び出すサービス名とメソッドです。
+		 * @param	responder	サーバの返却をコールバックするResponderです。
+		 * @param	parameter	メソッドに送るパラメータです。
+		 */
 		protected function methodCall(command:String, responder:Responder, parameter:Object = null):void {
 			CONFIG::debug {
 				connector.connect('http://localhost:8888/messagebroker/amf');
@@ -500,9 +556,19 @@ package
 		{
 			uiResultTurn.text = turn.toString();
 			uiResultScore.text = score.toString();
-			uiFinalScore.text = Math.round(score / turn).toString();
+			uiFinalScore.text = finalScore.toString();
 			
 			UI.showPopUp(uiConfirm);
+		}
+		/**
+		 * 最終得点を算出し、返します。
+		 */
+		protected function get finalScore():Number {
+			var n:Number = score;
+			if (turn > 1) {
+				n *= Math.pow(0.9, turn - 1);
+			}
+			return Math.round(n);
 		}
 		/**
 		 * 利用可能なヒントをシフトし、開示します。
@@ -515,8 +581,6 @@ package
 			var num:int = Math.min(9, int(nextGaussian(STDEVP + (current_hints.length * 0.025)) * 10));
 			shiftUsableHint(num);
 			uiHints.data = current_hints;
-			
-			if (current_hints.length > 1) bonus_point *= 0.9;
 		}
 		/**
 		 * 利用可能なヒントの配列の中からヒントをシフトし、開示します。
@@ -572,7 +636,7 @@ package
 		 * @return	表示用に整形されたヒントです。
 		 */
 		protected function formatHint(element:*):Object {
-			return { label: '<font size="10">' + element + '</font>' };
+			return { label: '<font size="10" color="#7B7B7B">' + element + '</font>' };
 		}
 		/**
 		 * 正解判定を行います。
@@ -581,28 +645,20 @@ package
 		 */
 		protected function check(e:Event = null):void 
 		{
-			if (trim(uiAnswer.text) == correct_number.join("")) {
+			if (StringUtil.trim(uiAnswer.text) == correct_number.join("")) {
 				uiMessage.text = "正解！";
 				turnSet();
 			} else {
 				uiMessage.text = "違います";
 				pushHint();
+				penalty();
 			}
 		}
 		/**
-		 * 文字列の前後の空白を取り除きます。
-		 * @param	s	対象となる文字列です。
-		 * @return	前後の空白が取り除かれた新しい文字列です。
+		 * 減点処理です。
 		 */
-		protected function trim(s:String):String {
-			// 左側の空白文字を判定
-			var i:int = 0;
-			while (s.charCodeAt(i) < 33) i++;
-			// 右側の空白文字を判定
-			var j:int = s.length - 1;
-			while (s.charCodeAt(j) < 33) j--;
-			// 左右の空白文字を除外した文字列を返却
-			return s.substring(i, j + 1);
+		protected function penalty():void {
+			bonus_point *= 0.9;
 		}
 		/**
 		 * ターン終了処理です。
@@ -612,7 +668,7 @@ package
 		protected function turnSet(e:Event = null):void {
 			uiEnter.visible = false;
 			
-			score += int(bonus_point);
+			score += Math.round(bonus_point);
 			uiScore.text = score.toString();
 			
 			uiNewGame.visible = true;

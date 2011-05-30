@@ -16,7 +16,7 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'2011/05/29'</value>
+      <value>'2011/05/30'</value>
     </define>
     <optimize>true</optimize>
     <omit-trace-statements>true</omit-trace-statements>
@@ -31,7 +31,7 @@
   <file-specs>
     <path-element>D:\usr\Kazushi\src\HitHint\src\Main.as</path-element>
   </file-specs>
-  <default-background-color>#FFFFFF</default-background-color>
+  <default-background-color>#EBFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>
   <default-size>
     <width>480</width>

@@ -12,7 +12,7 @@
     <title>Hit or Hint!</title>
     <content>HitHint.swf</content>
     <visible>true</visible>
-    <autoOrients>true</autoOrients>
+    <autoOrients>false</autoOrients>
     <systemChrome>standard</systemChrome>
   </initialWindow>
   <icon>
