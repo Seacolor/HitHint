@@ -8,16 +8,18 @@
   <compiler>
     <define append="true">
       <name>CONFIG::debug</name>
-      <value>true</value>
+      <value>false</value>
     </define>
     <define append="true">
       <name>CONFIG::release</name>
-      <value>false</value>
+      <value>true</value>
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
       <value>'2011/05/30'</value>
     </define>
+    <optimize>true</optimize>
+    <omit-trace-statements>true</omit-trace-statements>
     <source-path append="true">
       <path-element>D:\usr\Kazushi\src\HitHint\src</path-element>
       <path-element>D:\bin\FlashDevelop\Library\AS3\classes</path-element>

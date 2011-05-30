@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <application xmlns="http://ns.adobe.com/air/application/2.5">
-  <id>HitHint</id>
+  <id>com.seacolorswind.hithint</id>
   <versionNumber>0.1</versionNumber>
   <supportedProfiles>mobileDevice</supportedProfiles>
   <filename>HitHint</filename>
@@ -32,7 +32,7 @@
   </description>
   <android>
     <manifestAdditions><![CDATA[<manifest>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" xmlns:android="android" />
 	<uses-permission android:name="android.permission.INTERNET" xmlns:android="android" />
 </manifest>]]></manifestAdditions>
   </android>

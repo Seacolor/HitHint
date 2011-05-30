@@ -10,10 +10,10 @@ set PATH=%PATH%;D:\bin\FlashDevelop\Tools\flexsdk\bin
 
 :: Certificate information
 set NAME=SelfSigned
-set PASSWORD=fd
+set PASSWORD=l\CgNF;G5*ktW9eu9Tl:
 set CERTIFICATE=SelfSigned.p12
 
-call adt -certificate -cn %NAME% 1024-RSA %CERTIFICATE% %PASSWORD%
+call adt -certificate -validityPeriod 25 -cn %NAME% 1024-RSA %CERTIFICATE% %PASSWORD%
 if errorlevel 1 goto failed
 
 echo.
