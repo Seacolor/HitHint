@@ -368,12 +368,18 @@ package
 				uiRanking.addEventListener(TouchEvent.TOUCH_TAP, ranking);
 			}
 		}
-		
+		/**
+		 * ランキング画面からメイン画面に戻します。
+		 * @param	e	タッチイベントです。
+		 */
 		private function back(e:Event = null):void 
 		{
 			uiPages.previousPage();
 		}
-		
+		/**
+		 * メイン画面にランキング画面移ります。
+		 * @param	e	タッチイベントです。
+		 */
 		private function ranking(e:Event = null):void 
 		{
 			uiPages.nextPage();
@@ -393,8 +399,11 @@ package
 				new Responder(setScores, function(data:Object):void {trace("fault");})
 			);
 		}
-		
-		private function setScores(data:Object):void 
+		/**
+		 * スコアリストを画面にセットします。
+		 * @param	data	サーバのメソッドの返却値です
+		 */
+		protected function setScores(data:Object):void 
 		{
 			var scores:Array = JSON.decode(data as String) as Array;
 			var formattedScores:Array = [];
@@ -413,7 +422,10 @@ package
 			
 			uiScores.data = formattedScores;
 		}
-		
+		/**
+		 * スコアをランキングに登録します。
+		 * @param	e	タッチイベントです。
+		 */
 		protected function register(e:Event = null):void 
 		{
 			player_name = StringUtil.trim(uiName.text);
