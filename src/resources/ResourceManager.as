@@ -84,7 +84,7 @@ package resources
 		
 		/**
 		 * リソースファイルの読み取りを実行します。
-		 * @param	url	読み取るリソースファイルのパス
+		 * @param	language	言語
 		 * @param	name	リソースの名前
 		 */
 		protected function loadFile(language:String, name:String):void {
