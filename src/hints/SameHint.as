@@ -1,5 +1,7 @@
 package hints 
 {
+	[ja(same="同じ数字はある", nonsame="同じ数字はない")]
+	[en(same="same number exists.", nonsame="same number not exists.")]
 	/**
 	 * 同値の有無を求め、ヒントとして利用します。
 	 * @author Seacolor
@@ -31,14 +33,14 @@ package hints
 			for (var i:int = 0; i < correct_number.length; i++) {
 				for (var j:int = i + 1; j < correct_number.length; j++) {
 					if (correct_number[i] == correct_number[j]) {
-						hint_list.push("同じ数字はある");
+						hint_list.push(getMessage("same"));
 						return;
 					}
 					
 				}
 			}
 			
-			hint_list.push("同じ数字はない");
+			hint_list.push(getMessage("nonsame"));
 		}
 		
 	}

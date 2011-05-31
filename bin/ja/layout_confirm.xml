@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vertical background="#EBFFFF">
+	<label><font size="18" color="#7B7B7B"><b>Result</b></font></label>
+	<horizontal>
+		<label><font color="#7B7B7B">Turn:</font></label>
+		<label id="resultTurn">0</label>
+	</horizontal>
+	<horizontal>
+		<label><font color="#7B7B7B">Score:</font></label>
+		<label id="resultScore">0</label>
+	</horizontal>
+	<horizontal>
+		<arrow/>
+		<label><font color="#7B7B7B">Final Score:</font></label>
+		<label id="finalScore">0</label>
+	</horizontal>
+	<horizontal>
+		<arrow/>
+		<label><font color="#7B7B7B">player_name:</font></label>
+	</horizontal>
+	<input id="player_name" background="#7B7B7B,#EBFFFF" alignH="fill" />
+	<label><font color="#7B7B7B">ランキングに
+登録しますか？</font></label>
+	<horizontal>
+		<button id="register"><font color="#EBEBEB">OK</font></button>
+		<button id="cancel"><font color="#EBEBEB">NO</font></button>
+	</horizontal>
+</vertical>

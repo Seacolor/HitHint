@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+	<message id="correct">correct！</message>
+	<message id="incorrect">incorrect...</message>
+	<message id="invalid_name">20 or less characters long.</message>
+</data>

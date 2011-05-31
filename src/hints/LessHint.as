@@ -1,5 +1,7 @@
 package hints 
 {
+	[ja("{0} 番目は {1} 以下")]
+	[en("No.{0} is {1} or less.")]
 	/**
 	 * 正解となる数字以下の数字をヒントとして利用します。
 	 * @author Seacolor
@@ -32,7 +34,7 @@ package hints
 				var num:int = correct_number[i];
 				if (num == 0)  num = 1;
 				while (num < 9) {
-					hint_list.push((i + 1) + " 番目は " + num + " 以下");
+					hint_list.push(getMessage("", i + 1, num));
 					num++;
 				}
 			}

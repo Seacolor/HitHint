@@ -1,5 +1,7 @@
 package hints 
 {
+	[ja("全ての数字の和は {0}")]
+	[en("sum is {0}.")]
 	/**
 	 * 数字の和を求め、ヒントとして利用します。
 	 * @author Seacolor
@@ -33,7 +35,7 @@ package hints
 				sum += n;
 			}
 			
-			hint_list.push("全ての数字の和は " + sum);
+			hint_list.push(getMessage("", sum));
 		}
 		
 	}

@@ -1,5 +1,7 @@
 package hints 
 {
+	[ja(fraction="{0} 番目は {1} 番目の {2} 分の 1", multiple="{0} 番目は {1} 番目の {2} 倍")]
+	[en(fraction="No.{0} is 1/{2} of No.{1}", multiple="No.{0} is {2} times of No.{1}")]
 	/**
 	 * 倍数を求め、ヒントとして利用します。
 	 * @author Seacolor
@@ -40,10 +42,10 @@ package hints
 					
 					for (var k:int = 2; k <= 3; k++) {
 						if (correct_number[i] * k == correct_number[j]) {
-							hint_list.push(showNumber + " 番目は " + showNextNumber + " 番目の " + k + " 分の 1");
+							hint_list.push(getMessage("fraction", showNumber, showNextNumber, k));
 						}
 						if (correct_number[i] / k == correct_number[j]) {
-							hint_list.push(showNumber + " 番目は " + showNextNumber + " 番目の " + k + " 倍");
+							hint_list.push(getMessage("multiple", showNumber, showNextNumber, k));
 						}
 					}
 				}

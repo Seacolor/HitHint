@@ -1,5 +1,7 @@
 package hints 
 {
+	[ja(even="{0} 番目は偶数", odd="{0} 番目は奇数")]
+	[en(even="No.{0} is even number.", odd="No.{0} is odd number.")]
 	/**
 	 * 数字が偶数か奇数かを求め、ヒントとして利用します。
 	 * @author Seacolor
@@ -31,9 +33,9 @@ package hints
 			for (var i:int = 0; i < correct_number.length; i++) {
 				var showNumber:int = i + 1;
 				if (correct_number[i] % 2 == 0) {
-					hint_list.push(showNumber + " 番目は偶数");
+					hint_list.push(getMessage("even", showNumber));
 				} else {
-					hint_list.push(showNumber + " 番目は奇数");
+					hint_list.push(getMessage("odd", showNumber));
 				}
 			}
 		}

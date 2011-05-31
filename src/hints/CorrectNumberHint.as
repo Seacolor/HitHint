@@ -1,5 +1,7 @@
 package hints 
 {
+	[ja("{0} 番目は {1}")]
+	[en("No.{0} is {1}")]
 	/**
 	 * 正解となる数字をヒントとして利用します。
 	 * @author Seacolor
@@ -27,7 +29,7 @@ package hints
 		override protected function createHints():void 
 		{
 			for (var i:int = 0; i < correct_number.length; i++) {
-				hint_list.push((i + 1) + " 番目は " + correct_number[i]);
+				hint_list.push(getMessage("", i + 1, correct_number[i]));
 			}
 		}
 		

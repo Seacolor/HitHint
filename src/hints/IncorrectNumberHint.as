@@ -1,5 +1,7 @@
 package hints 
 {
+	[ja("{0} 番目は {1} ではない")]
+	[en("No.{0} is not {1}")]
 	/**
 	 * 不正解となる数字をヒントとして利用します。
 	 * @author Seacolor
@@ -31,7 +33,7 @@ package hints
 			for (var i:int = 0; i < correct_number.length; i++) {
 				for (var num:int = 0; num < 10; num++) {
 					if (correct_number[i] != num) {
-						hint_list.push((i + 1) + " 番目は " + num + " ではない");
+						hint_list.push(getMessage("", i + 1, num));
 					}
 				}
 			}

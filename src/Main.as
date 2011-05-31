@@ -26,6 +26,7 @@ package
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
 	import hints.*;
+	import resources.ResourceManager;
 	
 	/**
 	 * ゲーム「Hint or Hint」のメインクラスです。
@@ -80,6 +81,10 @@ package
 		public var player_name:String = "";
 		
 		/**
+		 * リソースです。
+		 */
+		protected var resource:ResourceManager = ResourceManager.instance;
+		/**
 		 * ヒントのクラス配列です。
 		 */
 		protected var hint_classes:Vector.<Class> = new <Class>[
@@ -104,7 +109,7 @@ package
 		/**
 		 * 通信です。
 		 */
-		public var connector:NetConnection;
+		protected var connector:NetConnection;
 		
 		/**
 		 * 画面に表示されるメッセージ
@@ -166,97 +171,23 @@ package
 		 * 確認画面に表示される名前入力欄
 		 */
 		protected var uiName:UIInput;
+		/**
+		 * 画面に表示されるランキングボタン
+		 */
 		protected var uiRanking:UIButton;
+		/**
+		 * 画面に表示されるページ
+		 */
 		protected var uiPages:UIPages;
+		/**
+		 * 画面に表示されるスコアランキング
+		 */
 		protected var uiScores:UIList;
+		/**
+		 * 画面に表示される戻るボタン
+		 */
 		protected var uiBack:UIButton;
 		
-		/**
-		 * レイアウト定義です。
-		 */
-		protected static const LAYOUT:XML =
-		<horizontal>
-			<vertical>
-				<horizontal>
-					<label id="uiTurn"/>
-					<label><font color="#7B7B7B"><b>Turn</b></font></label>
-				</horizontal>
-				<label id="uiMessage"/>
-				<input id="uiAnswer" background="#7B7B7B,#EBFFFF"/>
-				<button id="enter"><font color="#EBEBEB">Hit or Hint!</font></button>
-				<label></label>
-				<button id="uiRetry"><font color="#EBEBEB">Retry</font></button>
-				<label></label>
-				<button id="uiNewGame"><font color="#EBEBEB">Retire</font></button>
-				<button id="ranking"><font color="#EBEBEB">Ranking</font></button>
-				<horizontal alignV="bottom">
-					<label><b>Score: </b></label>
-					<label id="uiScore">0</label>
-				</horizontal>
-			</vertical>
-			<list id="uiHints" colour="#EBFFFF" background="#7B7B7B,#EBFFFF">
-				<label id="label"/>
-			</list>
-		</horizontal>
-		/**
-		 * レイアウト定義です。
-		 */
-		protected static const LAYOUT_RANKING:XML =
-		<vertical>
-			<button id="back"><font color="#EBEBEB">back</font></button>
-			<horizontal>
-				<label alignH="left"><font color="#7B7B7B"><b>Num</b></font></label>
-				<label><font color="#7B7B7B"><b>Name</b></font></label>
-				<label alignH="right"><font color="#7B7B7B"><b>Points</b></font></label>
-			</horizontal>
-			<list id="scores">
-				<horizontal>
-					<label id="order" alignH="left">000</label>
-					<label id="name">anonymous</label>
-					<label id="points" alignH="right">0000</label>
-				</horizontal>
-			</list>
-		</vertical>
-		protected static const PAGES:XML = <pages id="pages">{LAYOUT}{LAYOUT_RANKING}</pages>;
-		/**
-		 * レイアウト定義です。
-		 */
-		protected static const LAYOUT_CONFIRM:XML =
-		<vertical background="#EBFFFF">
-			<label><font size="18" color="#7B7B7B"><b>Result</b></font></label>
-			<horizontal>
-				<label><font color="#7B7B7B">Turn:</font></label>
-				<label id="resultTurn">0</label>
-			</horizontal>
-			<horizontal>
-				<label><font color="#7B7B7B">Score:</font></label>
-				<label id="resultScore">0</label>
-			</horizontal>
-			<horizontal>
-				<arrow/>
-				<label><font color="#7B7B7B">Final Score:</font></label>
-				<label id="finalScore">0</label>
-			</horizontal>
-			<horizontal>
-				<arrow/>
-				<label><font color="#7B7B7B">player_name:</font></label>
-			</horizontal>
-			<input id="player_name" background="#7B7B7B,#EBFFFF" alignH="fill" />
-			<label><font color="#7B7B7B">ランキングに
-登録しますか？</font></label>
-			<horizontal>
-				<button id="register"><font color="#EBEBEB">OK</font></button>
-				<button id="cancel"><font color="#EBEBEB">NO</font></button>
-			</horizontal>
-		</vertical>
-		/**
-		 * レイアウト定義です。
-		 */
-		protected static const LAYOUT_ALERT:XML =
-		<vertical background="#EBFFFF">
-			<label id="alert_message" alignH="fill" alignV="top">Message</label>
-			<button id="close" alignH="centre" alignV="bottom"><font color="#EBEBEB">Close</font></button>
-		</vertical>
 		/**
 		 * ガウス分布の平均です。
 		 */
@@ -282,10 +213,10 @@ package
 			CONFIG::release {
 				Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 			}
+
+			UI.create(this, resource.layout);
 			
-			UI.create(this, PAGES);
-			
-			uiConfirm = UI.createPopUp(LAYOUT_CONFIRM, 140.0, 300.0);
+			uiConfirm = UI.createPopUp(resource.layout_confirm, 140.0, 300.0);
 			
 			uiPages = UIPages(UI.findViewById("pages"))
 			
@@ -487,7 +418,7 @@ package
 		{
 			player_name = StringUtil.trim(uiName.text);
 			if (player_name.length > 20) {
-				alert("名前は20文字以内です", 100.0, 80.0);
+				alert(resource.messages.message.(@id == "invalid_name").text(), 100.0, 100.0);
 				return;
 			}
 			
@@ -511,7 +442,7 @@ package
 		 * @param	message	表示される警告メッセージです。
 		 */
 		protected function alert(message:String, width:Number, height:Number):void {
-			var uiAlert:UIWindow = UI.createPopUp(LAYOUT_ALERT, width, height);
+			var uiAlert:UIWindow = UI.createPopUp(resource.layout_alert, width, height);
 			var uiAlertMessage:UILabel = UILabel(uiAlert.findViewById("alert_message"));
 			uiAlertMessage.defaultTextFormat = DEFAULT_LABEL_FORMAT;
 			uiAlertMessage.text = message;
@@ -646,10 +577,10 @@ package
 		protected function check(e:Event = null):void 
 		{
 			if (StringUtil.trim(uiAnswer.text) == correct_number.join("")) {
-				uiMessage.text = "正解！";
+				uiMessage.text = resource.messages.message.(@id == "correct").text();
 				turnSet();
 			} else {
-				uiMessage.text = "違います";
+				uiMessage.text = resource.messages.message.(@id == "incorrect").text();
 				pushHint();
 				penalty();
 			}

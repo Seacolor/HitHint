@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vertical background="#EBFFFF">
+	<label id="alert_message" alignH="fill" alignV="top">Message</label>
+	<button id="close" alignH="centre" alignV="bottom"><font color="#EBEBEB">Close</font></button>
+</vertical>

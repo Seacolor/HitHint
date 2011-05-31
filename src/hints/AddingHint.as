@@ -1,5 +1,7 @@
 package hints 
 {
+	[ja("{0} 番目と {1} 番目を足すと {2}")]
+	[en("No.{0} plus No.{1} is {2}.")]
 	/**
 	 * 数字同士を加算し、ヒントとして利用します。
 	 * @author Seacolor
@@ -28,7 +30,7 @@ package hints
 		{
 			for (var i:int = 0; i < correct_number.length; i++) {
 				for (var j:int = i + 1; j < correct_number.length; j++) {
-					hint_list.push((i + 1) + " 番目と " + (j + 1) + " 番目を足すと " + (correct_number[i] + correct_number[j]));
+					hint_list.push(getMessage("", i + 1, j + 1, correct_number[i] + correct_number[j]));
 				}
 			}
 		}

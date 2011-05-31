@@ -1,5 +1,7 @@
 package hints 
 {
+	[ja("全ての数字の積は {0}")]
+	[en("product is {0}.")]
 	/**
 	 * 数字の積を求め、ヒントとして利用します。
 	 * @author Seacolor
@@ -33,7 +35,7 @@ package hints
 				product *= n;
 			}
 			
-			hint_list.push("全ての数字の積は " + product);
+			hint_list.push(getMessage("", product));
 		}
 		
 	}

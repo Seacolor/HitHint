@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<flex-config xmlns="http://www.adobe.com/2006/flex-config">
+    <compiler>
+        <keep-as3-metadata>
+			<name>cs</name>
+			<name>da</name>
+			<name>nl</name>
+			<name>en</name>
+			<name>fi</name>
+			<name>fr</name>
+			<name>de</name>
+			<name>hu</name>
+			<name>it</name>
+			<name>ja</name>
+			<name>ko</name>
+			<name>no</name>
+			<name>xu</name>
+			<name>pl</name>
+			<name>pt</name>
+			<name>ru</name>
+			<name>zh-CN</name>
+			<name>es</name>
+			<name>sv</name>
+			<name>zh-TW</name>
+			<name>tr</name>
+        </keep-as3-metadata>
+    </compiler>
+</flex-config>

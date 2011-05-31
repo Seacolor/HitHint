@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pages id="pages">
+	<horizontal>
+		<vertical>
+			<horizontal>
+				<label id="uiTurn"/>
+				<label><font color="#7B7B7B"><b>Turn</b></font></label>
+			</horizontal>
+			<label id="uiMessage"/>
+			<input id="uiAnswer" background="#7B7B7B,#EBFFFF"/>
+			<button id="enter"><font color="#EBEBEB">Hit or Hint!</font></button>
+			<label></label>
+			<button id="uiRetry"><font color="#EBEBEB">Retry</font></button>
+			<label></label>
+			<button id="uiNewGame"><font color="#EBEBEB">Retire</font></button>
+			<button id="ranking"><font color="#EBEBEB">Ranking</font></button>
+			<horizontal alignV="bottom">
+				<label><b>Score: </b></label>
+				<label id="uiScore">0</label>
+			</horizontal>
+		</vertical>
+		<list id="uiHints" colour="#EBFFFF" background="#7B7B7B,#EBFFFF">
+			<label id="label"/>
+		</list>
+	</horizontal>
+	<vertical>
+		<button id="back"><font color="#EBEBEB">back</font></button>
+		<horizontal>
+			<label alignH="left"><font color="#7B7B7B"><b>Num</b></font></label>
+			<label><font color="#7B7B7B"><b>Name</b></font></label>
+			<label alignH="right"><font color="#7B7B7B"><b>Points</b></font></label>
+		</horizontal>
+		<list id="scores">
+			<horizontal>
+				<label id="order" alignH="left">000</label>
+				<label id="name">anonymous</label>
+				<label id="points" alignH="right">0000</label>
+			</horizontal>
+		</list>
+	</vertical>
+</pages>

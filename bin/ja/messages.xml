@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+	<message id="correct">正解！</message>
+	<message id="incorrect">違います</message>
+	<message id="invalid_name">名前は20文字以内です</message>
+</data>

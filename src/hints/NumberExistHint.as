@@ -1,5 +1,7 @@
 package hints 
 {
+	[ja(exist="{0} はある", notexist="{0} はない")]
+	[en(exist="{0} exists.", notexist="{0} not exists.")]
 	/**
 	 * 各数字の有無を求め、ヒントとして利用します。
 	 * @author Seacolor
@@ -31,12 +33,12 @@ package hints
 			loop_num : for (var i:int = 0; i <= 9; i++) {
 				for each (var n:int in correct_number) {
 					if (n == i) {
-						hint_list.push(i + " はある");
+						hint_list.push(getMessage("exist", i));
 						continue loop_num;
 					}
 				}
 				
-				hint_list.push(i + " はない");
+				hint_list.push(getMessage("notexist", i));
 			}
 		}
 		

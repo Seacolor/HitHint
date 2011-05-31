@@ -1,5 +1,8 @@
 package hints 
 {
+	import flash.utils.describeType;
+	import mx.utils.StringUtil;
+	import resources.ResourceManager;
 	/**
 	 * ヒントのテンプレートクラスです。
 	 * @author Seacolor
@@ -50,7 +53,16 @@ package hints
 		 */
 		protected function createHints():void 
 		{
-			
+		}
+		
+		/**
+		 * 言語に基くヒントのメッセージをメタデータタグから取得し、返却します。
+		 * @param	id	取得するメッセージのIDです。
+		 * @param	rest	メッセージ内の各 {n} 位置にある置換可能な追加パラメーターです。
+		 * @return	ヒントのメッセージです。
+		 */
+		protected function getMessage(id:String = "", ... rest):String {
+			return StringUtil.substitute(describeType(this).metadata.(@name == ResourceManager.instance.language).arg.(@key == id).@value, rest);
 		}
 		
 	}
